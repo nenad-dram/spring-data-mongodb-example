@@ -8,7 +8,9 @@ import com.endyary.springdatamongodb.repository.OrderRepository;
 import com.endyary.springdatamongodb.repository.ProductRepository;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,9 +18,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = MongoConfig.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ShopDbTest {
 
     @Autowired
@@ -83,6 +87,35 @@ class ShopDbTest {
         SoftAssertions orderAssert = new SoftAssertions();
         orderAssert.assertThat(Order.Status.SHIPPED).isEqualTo(updatedOrder.getStatus());
         orderAssert.assertThat(updatedOrder.getModifiedDate()).isNotNull();
+        orderAssert.assertAll();
+    }
+
+    @Test
+    @org.junit.jupiter.api.Order(7)
+    void findCustomerByUsernameOrEmail() {
+        Optional<Customer> foundCustomer = customerRepository.findByUsernameOrEmail("test", "test@mail.com");
+        Assertions.assertTrue(foundCustomer.isPresent());
+    }
+
+    @Test
+    @org.junit.jupiter.api.Order(8)
+    void findOrderByStatus() {
+        Optional<List<Order>> foundOrders = orderRepository.findByStatus(Order.Status.SHIPPED);
+
+        SoftAssertions orderAssert = new SoftAssertions();
+        orderAssert.assertThat(foundOrders.isPresent()).isTrue();
+        orderAssert.assertThat(foundOrders.get().size()).isEqualTo(1);
+        orderAssert.assertAll();
+    }
+
+    @Test
+    @org.junit.jupiter.api.Order(9)
+    void findOrderByCustomer() {
+        Optional<List<Order>> foundOrders = orderRepository.findByCustomer(MockDataProvider.getCustomer());
+
+        SoftAssertions orderAssert = new SoftAssertions();
+        orderAssert.assertThat(foundOrders.isPresent()).isTrue();
+        orderAssert.assertThat(foundOrders.get().size()).isEqualTo(1);
         orderAssert.assertAll();
     }
 }
