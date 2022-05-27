@@ -6,6 +6,7 @@ import com.endyary.springdatamongodb.model.Product;
 import com.endyary.springdatamongodb.repository.CustomerRepository;
 import com.endyary.springdatamongodb.repository.OrderRepository;
 import com.endyary.springdatamongodb.repository.ProductRepository;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ExtendWith({SpringExtension.class})
@@ -75,7 +77,12 @@ class ShopDbTest {
     void updateOrderStatus() {
         Order existingOrder = orderRepository.findById(1L).get();
         existingOrder.setStatus(Order.Status.SHIPPED);
+        existingOrder.setModifiedDate(LocalDateTime.now());
         Order updatedOrder = orderRepository.save(existingOrder);
-        Assertions.assertEquals(updatedOrder.getStatus(), Order.Status.SHIPPED);
+
+        SoftAssertions orderAssert = new SoftAssertions();
+        orderAssert.assertThat(Order.Status.SHIPPED).isEqualTo(updatedOrder.getStatus());
+        orderAssert.assertThat(updatedOrder.getModifiedDate()).isNotNull();
+        orderAssert.assertAll();
     }
 }
