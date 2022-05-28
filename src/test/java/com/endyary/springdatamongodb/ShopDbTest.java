@@ -144,7 +144,7 @@ class ShopDbTest {
     @Test
     @org.junit.jupiter.api.Order(12)
     void getTotalPriceByOrderId() {
-        Integer result = orderRepository.getTotalPriceByOrderId(1L);
+        Integer result = orderRepository.getTotalPriceById(1L);
         Assertions.assertEquals(1200, result);
     }
 

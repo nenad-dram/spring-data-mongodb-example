@@ -31,5 +31,5 @@ public interface OrderRepository extends MongoRepository<Order, Long> {
                         }
                     }
                     }"""})
-    Integer getTotalPriceByOrderId(Long orderId);
+    Integer getTotalPriceById(Long orderId);
 }
