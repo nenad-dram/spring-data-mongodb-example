@@ -118,4 +118,34 @@ class ShopDbTest {
         orderAssert.assertThat(foundOrders.get().size()).isEqualTo(1);
         orderAssert.assertAll();
     }
+
+    @Test
+    @org.junit.jupiter.api.Order(10)
+    void findOrdersByProductId() {
+        Optional<List<Order>> foundOrders = orderRepository.findByProductId(1L);
+
+        SoftAssertions orderAssert = new SoftAssertions();
+        orderAssert.assertThat(foundOrders.isPresent()).isTrue();
+        orderAssert.assertThat(foundOrders.get().size()).isEqualTo(1);
+        orderAssert.assertAll();
+    }
+
+    @Test
+    @org.junit.jupiter.api.Order(11)
+    void findProductsByPriceRange() {
+        Optional<List<Product>> foundProducts = productRepository.findByPriceBetween(150, 250);
+
+        SoftAssertions productAssert = new SoftAssertions();
+        productAssert.assertThat(foundProducts.isPresent()).isTrue();
+        productAssert.assertThat(foundProducts.get().size()).isEqualTo(1);
+        productAssert.assertAll();
+    }
+
+    @Test
+    @org.junit.jupiter.api.Order(12)
+    void getTotalPriceByOrderId() {
+        Integer result = orderRepository.getTotalPriceByOrderId(1L);
+        Assertions.assertEquals(1200, result);
+    }
+
 }
