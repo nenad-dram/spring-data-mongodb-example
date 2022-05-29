@@ -23,7 +23,7 @@ import java.util.Optional;
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = MongoConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ShopDbTest {
+class MongoRepositoryTest {
 
     @Autowired
     ProductRepository productRepository;
